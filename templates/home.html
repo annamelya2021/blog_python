@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Останні пости</h1>
+    
+    {% if 'user_id' in session %}
+        <a href="{{ url_for('new_post') }}" class="btn btn-primary mb-4">Створити новий пост</a>
+    {% endif %}
+
+    {% for post in posts %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">{{ post.title }}</h2>
+                <p class="card-text">{{ post.content }}</p>
+                <div class="text-muted small mb-3">
+                    Автор: {{ post.author_username }} | 
+                    {{ post.created_at.strftime('%d.%m.%Y %H:%M') }}
+                </div>
+                
+                {% if 'user_id' in session and session.user_id == post.author_id %}
+                <div class="post-actions">
+                    <a href="{{ url_for('edit_post', post_id=post._id) }}" class="btn btn-sm btn-outline-primary">
+                        Редагувати
+                    </a>
+                    <form action="{{ url_for('delete_post', post_id=post._id) }}" method="POST" class="d-inline" onsubmit="return confirm('Ви впевнені, що хочете видалити цей пост?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            Видалити
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Постів ще немає. Будьте першим, хто створить пост!
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+<style>
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+}
+h1 {
+    color: #333;
+    margin-bottom: 30px;
+}
+.btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+.btn:hover {
+    background-color: #0056b3;
+}
+p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #555;
+}
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+.card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card-body {
+    padding: 20px;
+}
+.card-title {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.card-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #555;
+}
+.text-muted {
+    color: #999;
+}
+.small {
+    font-size: 14px;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.alert-info {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+}
+.post-actions {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+.btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+}
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+</style>
